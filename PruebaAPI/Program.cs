@@ -1,3 +1,9 @@
+using Data;
+using Data.Repositories.SchoolRepo;
+using DB;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +13,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<PruebaContext>(options=>
+    options.UseMySql(builder.Configuration.GetConnectionString("MySqlConnection"), new MySqlServerVersion(new Version(8, 0, 34)))
+);
+
+builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
+builder.Services.AddAutoMapper(typeof(MappingConfig));
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<PruebaContext>();
+    context.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
