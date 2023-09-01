@@ -13,7 +13,7 @@ namespace Data.Repositories.GradesRepo
         Task<IEnumerable<GetGradeDTO>> GetAllGrades();
         Task<GetGradeDTO> GetGradeById(int id);
         Task<IEnumerable<GetGradeDTO>> GetGradeByName(string name);
-        Task<bool> CreateGrade(CreateGradeDTO createDTO);
+        Task<int> CreateGrade(CreateGradeDTO createDTO);
         Task<bool> UpdateGrade(UpdateGradeDTO updateDTO);
         Task<bool> SoftDeleteGrade(int id);
         Task<bool> HardDeleteGrade(int id);

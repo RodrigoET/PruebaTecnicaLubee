@@ -54,18 +54,18 @@ namespace Data.Repositories.GradesRepo
             return gradesList;
         }
 
-        public async Task<bool> CreateGrade(CreateGradeDTO createDTO)
+        public async Task<int> CreateGrade(CreateGradeDTO createDTO)
         {
             Grade modelo = _mapper.Map<Grade>(createDTO);
-            bool creado = false;
+            int createdId = 0;
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
                     await _context.Grades.AddAsync(modelo);
-                    creado = await _context.SaveChangesAsync() > 0;
-
+                    await _context.SaveChangesAsync();
+                    createdId = modelo.Id;
                     await transaction.CommitAsync();
                 }
                 catch (Exception)
@@ -75,7 +75,7 @@ namespace Data.Repositories.GradesRepo
                 }
             }
 
-            return creado;
+            return createdId;
         }
 
         public async Task<bool> UpdateGrade(UpdateGradeDTO updateDTO)
@@ -85,11 +85,11 @@ namespace Data.Repositories.GradesRepo
             {
                 try
                 {
-                    var grade = _context.Schools.AsNoTracking().FirstOrDefault(s => s.Id == updateDTO.Id);
+                    var grade = _context.Grades.AsNoTracking().FirstOrDefault(g => g.Id == updateDTO.Id);
                     if (grade != null)
                     {
-                        grade = _mapper.Map<School>(updateDTO);
-                        _context.Schools.Update(grade);
+                        grade = _mapper.Map<Grade>(updateDTO);
+                        _context.Grades.Update(grade);
                         updated = await _context.SaveChangesAsync() > 0;
                     }
                     await transaction.CommitAsync();
