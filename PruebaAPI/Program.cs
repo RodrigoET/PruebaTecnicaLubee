@@ -1,4 +1,5 @@
 using Data;
+using Data.Repositories.GradesRepo;
 using Data.Repositories.SchoolRepo;
 using DB;
 using Microsoft.EntityFrameworkCore;
@@ -18,15 +19,16 @@ builder.Services.AddDbContext<PruebaContext>(options=>
 );
 
 builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
+builder.Services.AddScoped<IGradeRepository, GradeRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<PruebaContext>();
-    context.Database.Migrate();
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var context = scope.ServiceProvider.GetRequiredService<PruebaContext>();
+//    context.Database.Migrate();
+//}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

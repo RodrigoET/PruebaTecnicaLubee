@@ -1,43 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace Data.DTOs.ContractDTO
 {
-    public class Contract
+    internal class CreateContractDTO
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        
         [Required]
         [StringLength(6)]
         public string CourseCode { get; set; }
-
-        public DateTime RegistrationDate { get; set; } = DateTime.Now;
-
         public int StatusId { get; set; }
-
-        public int NumberOfGraduates { get; set; }
-
         public DateTime DeliveryDate { get; set; }
-
         public int DeliveryMethodId { get; set; }
-
         [Required]
         public int VendorId { get; set; }
-
         [Required]
         public int GradeId { get; set; }
-
         public int Commission { get; set; }
-
-        public double Total { get; set; }
-
-        public virtual ICollection<ItemXContract> ItemXContract { get; set; }
+        
+        public List<CreateDetailContractDTO> Detail { get; set; } = new List<CreateDetailContractDTO>();
     }
 }

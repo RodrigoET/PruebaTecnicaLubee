@@ -1,63 +1,71 @@
 ﻿using AutoMapper;
-using Data.DTOs.SchoolDTO;
+using AutoMapper.QueryableExtensions;
+using Data.DTOs.GradeDTO;
 using DB;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Storage;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 
-namespace Data.Repositories.SchoolRepo
+namespace Data.Repositories.GradesRepo
 {
-    public class SchoolRepository : ISchoolRepository
+    public class GradeRepository : IGradeRepository
     {
         private readonly PruebaContext _context;
         private readonly IMapper _mapper;
 
-        public SchoolRepository(PruebaContext context, IMapper mapper)
+        public GradeRepository(PruebaContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
 
-        public async Task<IEnumerable<GetSchoolDTO>> GetAllSchools()
+        public async Task<IEnumerable<GetGradeDTO>> GetAllGrades()
         {
-            IEnumerable<School> schoolsList = await _context.Schools.Where(s => !s.Deleted).ToListAsync();
+            var gradesList = await _context.Grades
+                .Where(g => !g.Deleted)
+                .ProjectTo<GetGradeDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
 
-            return _mapper.Map<IEnumerable<GetSchoolDTO>>(schoolsList);
-            //throw new NotImplementedException();
+            return gradesList;
         }
 
-        public async Task<GetSchoolDTO> GetSchoolById(int id)
+        public async Task<GetGradeDTO> GetGradeById(int id)
         {
-            School school = await _context.Schools.Where(s => s.Id == id && !s.Deleted).FirstOrDefaultAsync();
-            return _mapper.Map<GetSchoolDTO>(school);
+            var grade = await _context.Grades
+                .Where(g => !g.Deleted && g.Id == id)
+                .ProjectTo<GetGradeDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
 
-        }
-        public async Task<IEnumerable<GetSchoolDTO>> GetSchoolByName(string name)
-        {
-            IEnumerable<School> schoolsList = await _context.Schools.Where(s => s.Name.Contains(name) && !s.Deleted).ToListAsync();
-
-            return _mapper.Map<IEnumerable<GetSchoolDTO>>(schoolsList);
+            return grade;
         }
 
-        public async Task<int> CreateSchool(CreateSchoolDTO createDTO)
+        public async Task<IEnumerable<GetGradeDTO>> GetGradeByName(string name)
         {
-            School model = _mapper.Map<School>(createDTO);
-            int createdId = 0;
+            var gradesList = await _context.Grades
+                .Where(g => !g.Deleted && g.Name.Contains(name))
+                .ProjectTo<GetGradeDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return gradesList;
+        }
+
+        public async Task<bool> CreateGrade(CreateGradeDTO createDTO)
+        {
+            Grade modelo = _mapper.Map<Grade>(createDTO);
+            bool creado = false;
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    await _context.Schools.AddAsync(model);
-                    await _context.SaveChangesAsync();
-                    createdId = model.Id;
+                    await _context.Grades.AddAsync(modelo);
+                    creado = await _context.SaveChangesAsync() > 0;
+
                     await transaction.CommitAsync();
                 }
                 catch (Exception)
@@ -66,21 +74,22 @@ namespace Data.Repositories.SchoolRepo
                     throw;
                 }
             }
-            return createdId;
+
+            return creado;
         }
 
-        public async Task<bool> UpdateSchool(UpdateSchoolDTO updateDTO)
+        public async Task<bool> UpdateGrade(UpdateGradeDTO updateDTO)
         {
             bool updated = false;
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var school = _context.Schools.AsNoTracking().FirstOrDefault(s=>s.Id == updateDTO.Id);
-                    if (school != null)
+                    var grade = _context.Schools.AsNoTracking().FirstOrDefault(s => s.Id == updateDTO.Id);
+                    if (grade != null)
                     {
-                        school = _mapper.Map<School>(updateDTO);
-                        _context.Schools.Update(school);
+                        grade = _mapper.Map<School>(updateDTO);
+                        _context.Schools.Update(grade);
                         updated = await _context.SaveChangesAsync() > 0;
                     }
                     await transaction.CommitAsync();
@@ -94,18 +103,18 @@ namespace Data.Repositories.SchoolRepo
             return updated;
         }
 
-        public async Task<bool> SoftDeleteSchool(int id)
+        public async Task<bool> SoftDeleteGrade(int id)
         {
             bool deleted = false;
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var model = await _context.Schools.Where(s => s.Id == id).FirstOrDefaultAsync();
+                    var model = await _context.Grades.Where(s => s.Id == id).FirstOrDefaultAsync();
                     if (model != null)
                     {
                         model.Deleted = true;
-                        _context.Schools.Update(model);
+                        _context.Grades.Update(model);
                         deleted = await _context.SaveChangesAsync() > 0;
                     }
                     await transaction.CommitAsync();
@@ -120,7 +129,7 @@ namespace Data.Repositories.SchoolRepo
             return deleted;
         }
 
-        public async Task<bool> HardDeleteSchool(int id)
+        public async Task<bool> HardDeleteGrade(int id)
         {
             bool deleted = false;
 
@@ -128,10 +137,10 @@ namespace Data.Repositories.SchoolRepo
             {
                 try
                 {
-                    School school = await _context.Schools.FindAsync(id);
-                    if (school != null)
+                    Grade grade = await _context.Grades.FindAsync(id);
+                    if (grade != null)
                     {
-                        _context.Remove(school);
+                        _context.Remove(grade);
                         deleted = await _context.SaveChangesAsync() > 0;
                     }
                     await transaction.CommitAsync();
@@ -144,5 +153,7 @@ namespace Data.Repositories.SchoolRepo
             }
             return deleted;
         }
+
+        
     }
 }

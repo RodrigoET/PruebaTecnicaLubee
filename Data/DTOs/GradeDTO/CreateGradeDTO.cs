@@ -5,14 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.DTOs.SchoolDTO
+namespace Data.DTOs.GradeDTO
 {
-    public class CreateSchoolDTO
+    public class CreateGradeDTO
     {
         [Required]
-        [StringLength(50)]
-        public string Name { get; set; }
         [StringLength(100)]
-        public string Location { get; set; }
+        public string Name { get; set; }
+
+        [Required]
+        public int SchoolId { get; set; }
     }
 }

@@ -22,5 +22,7 @@ namespace Model
         public double Price { get; set; }
 
         public bool Deleted { get; set; } = false;
+
+        public virtual ICollection<ItemXContract> ItemXContract { get; set;}
     }
 }

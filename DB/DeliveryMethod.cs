@@ -15,6 +15,7 @@ namespace Model
         public int Id { get; set; }
         
         [Required]
+        [StringLength(100)]
         public string Description { get; set; }
 
         public bool Deleted { get; set; } = false;
