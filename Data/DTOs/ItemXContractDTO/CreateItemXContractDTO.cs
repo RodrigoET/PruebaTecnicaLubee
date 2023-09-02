@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.DTOs.ContractDTO
+namespace Data.DTOs.ItemXContractDTO
 {
-    internal class CreateDetailContractDTO
+    public class CreateItemXContractDTO
     {
         [Required]
         public int ItemId { get; set; }

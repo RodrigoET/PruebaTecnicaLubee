@@ -1,4 +1,5 @@
 using Data;
+using Data.Repositories.ContractRepo;
 using Data.Repositories.GradesRepo;
 using Data.Repositories.ItemRepo;
 using Data.Repositories.SchoolRepo;
@@ -22,6 +23,7 @@ builder.Services.AddDbContext<PruebaContext>(options=>
 builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
 builder.Services.AddScoped<IGradeRepository, GradeRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IContractRepository, ContractRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 var app = builder.Build();

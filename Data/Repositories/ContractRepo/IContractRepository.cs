@@ -10,12 +10,11 @@ namespace Data.Repositories.ContractRepo
 {
     public interface IContractRepository
     {
-        Task<IEnumerable<GetContractDTO>> GetAllGrades();
-        Task<GetGradeDTO> GetGradeById(int id);
-        Task<IEnumerable<GetGradeDTO>> GetGradeByName(string name);
-        Task<bool> CreateGrade(CreateGradeDTO createDTO);
-        Task<bool> UpdateGrade(UpdateGradeDTO updateDTO);
-        Task<bool> SoftDeleteGrade(int id);
-        Task<bool> HardDeleteGrade(int id);
+        Task<IEnumerable<GetContractDTO>> GetAllContracts();
+        Task<GetContractDTO> GetContractById(int id);
+        Task<IEnumerable<GetContractDTO>> GetContractByName(string name);
+        Task<int> CreateContract(CreateContractDTO createDTO);
+        Task<bool> SoftDeleteContract(int id);
+        Task<bool> HardDeleteContract(int id);
     }
 }

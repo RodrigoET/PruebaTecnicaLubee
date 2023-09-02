@@ -12,6 +12,8 @@ namespace Data.DTOs.SchoolDTO
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
+        [StringLength(50)]
+        public string Level { get; set; }
         [StringLength(100)]
         public string Location { get; set; }
     }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Model.Migrations
 {
     [DbContext(typeof(PruebaContext))]
-    [Migration("20230901061040_InitMigrationAddAllTables")]
-    partial class InitMigrationAddAllTables
+    [Migration("20230901180626_InitMigration")]
+    partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,6 +29,11 @@ namespace Model.Migrations
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -68,7 +73,7 @@ namespace Model.Migrations
                     b.Property<int>("GradeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumberOfGraduates")
+                    b.Property<int>("QuantityShipped")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("RegistrationDate")
@@ -84,6 +89,14 @@ namespace Model.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DeliveryMethodId");
+
+                    b.HasIndex("GradeId");
+
+                    b.HasIndex("StatusId");
+
+                    b.HasIndex("VendorId");
 
                     b.ToTable("Contracts");
                 });
@@ -242,6 +255,41 @@ namespace Model.Migrations
                     b.ToTable("Vendors");
                 });
 
+            modelBuilder.Entity("Model.Contract", b =>
+                {
+                    b.HasOne("Model.DeliveryMethod", "DeliveryMethod")
+                        .WithMany("Contracts")
+                        .HasForeignKey("DeliveryMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Model.Grade", "Grade")
+                        .WithMany("Contracts")
+                        .HasForeignKey("GradeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Model.Status", "Status")
+                        .WithMany("Contracts")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Model.Vendor", "Vendor")
+                        .WithMany("Contracts")
+                        .HasForeignKey("VendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DeliveryMethod");
+
+                    b.Navigation("Grade");
+
+                    b.Navigation("Status");
+
+                    b.Navigation("Vendor");
+                });
+
             modelBuilder.Entity("Model.Grade", b =>
                 {
                     b.HasOne("DB.School", "School")
@@ -282,9 +330,29 @@ namespace Model.Migrations
                     b.Navigation("ItemXContract");
                 });
 
+            modelBuilder.Entity("Model.DeliveryMethod", b =>
+                {
+                    b.Navigation("Contracts");
+                });
+
+            modelBuilder.Entity("Model.Grade", b =>
+                {
+                    b.Navigation("Contracts");
+                });
+
             modelBuilder.Entity("Model.Item", b =>
                 {
                     b.Navigation("ItemXContract");
+                });
+
+            modelBuilder.Entity("Model.Status", b =>
+                {
+                    b.Navigation("Contracts");
+                });
+
+            modelBuilder.Entity("Model.Vendor", b =>
+                {
+                    b.Navigation("Contracts");
                 });
 #pragma warning restore 612, 618
         }

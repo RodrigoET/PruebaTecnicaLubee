@@ -26,5 +26,7 @@ namespace Model
         public virtual School School { get; set; }
 
         public bool Deleted { get; set; } = false;
+
+        public virtual ICollection<Contract> Contracts { get; set; }
     }
 }

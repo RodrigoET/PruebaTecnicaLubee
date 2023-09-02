@@ -19,5 +19,6 @@ namespace Model
         public string Description { get; set; }
 
         public bool Deleted { get; set; } = false;
+        public virtual ICollection<Contract> Contracts { get; set; }
     }
 }

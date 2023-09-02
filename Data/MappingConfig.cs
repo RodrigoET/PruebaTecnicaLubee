@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Data.DTOs.ContractDTO;
 using Data.DTOs.GradeDTO;
 using Data.DTOs.ItemDTO;
+using Data.DTOs.ItemXContractDTO;
 using Data.DTOs.SchoolDTO;
 using DB;
 using Model;
@@ -16,10 +18,13 @@ namespace Data
     {
         public MappingConfig()
         {
-            #region SCHOOL
-            CreateMap<School, GetSchoolDTO>().ReverseMap();
-            CreateMap<School, CreateSchoolDTO>().ReverseMap();
-            CreateMap<School, UpdateSchoolDTO>().ReverseMap();
+            #region CONTRACT
+            CreateMap<Contract, CreateContractDTO>().ReverseMap();
+            CreateMap<Contract, GetContractDTO>()
+                .ForMember(dest => dest.School, opt => opt.MapFrom(src => src.Grade.School.Name))
+                .ForMember(dest => dest.SchoolLevel, opt => opt.MapFrom(src => src.Grade.School.Level))
+                .ForMember(dest => dest.SchoolLocation, opt => opt.MapFrom(src => src.Grade.School.Location))
+                .ForMember(dest => dest.SchoolGrade, opt => opt.MapFrom(src => src.Grade.Name));
             #endregion
 
             #region GRADE
@@ -35,6 +40,21 @@ namespace Data
             CreateMap<Item, CreateItemDTO>().ReverseMap();
             CreateMap<Item, UpdateItemDTO>().ReverseMap();
             #endregion
+
+            #region ITEMXCONTRACT
+            CreateMap<ItemXContract, CreateItemXContractDTO>().ReverseMap();
+            CreateMap<ItemXContract, GetItemXContractDTO>()
+                .ForMember(dest => dest.Item, opt => opt.MapFrom(src => src.Item.Name))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Item.Price));
+            #endregion
+
+            #region SCHOOL
+            CreateMap<School, GetSchoolDTO>().ReverseMap();
+            CreateMap<School, CreateSchoolDTO>().ReverseMap();
+            CreateMap<School, UpdateSchoolDTO>().ReverseMap();
+            #endregion
+
+
 
         }
     }

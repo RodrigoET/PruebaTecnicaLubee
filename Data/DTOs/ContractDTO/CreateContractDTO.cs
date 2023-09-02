@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.DTOs.ItemXContractDTO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTOs.ContractDTO
 {
-    internal class CreateContractDTO
+    public class CreateContractDTO
     {
         [Required]
         [StringLength(6)]
@@ -21,6 +22,6 @@ namespace Data.DTOs.ContractDTO
         public int GradeId { get; set; }
         public int Commission { get; set; }
         
-        public List<CreateDetailContractDTO> Detail { get; set; } = new List<CreateDetailContractDTO>();
+        public List<CreateItemXContractDTO> Detail { get; set; } = new List<CreateItemXContractDTO>();
     }
 }
